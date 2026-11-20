@@ -272,7 +272,7 @@ function updHud(force){
   const k=mode+'|'+(G?G.goldLeft+'|'+G.score:'')+'|'+lives+'|'+settings.mute+'|'+(cur?levelLabel():'');
   if(k===hudKey&&!force)return;hudKey=k;
   const ed=mode==='editor';
-  if(retro()&&G&&!ed){$('lvl').innerHTML=(cur.custom?'MON NIVEAU':'NIVEAU '+String(cur.index+1).padStart(3,'0'))+'<small>'+esc(cur.level.name)+'</small>';}else $('lvl').innerHTML=ed?'Atelier de niveaux<small>Clic pour poser, clic droit pour effacer</small>':cur?esc(levelLabel())+'<small>'+(testing?'Mode test':'Runner')+'</small>':'Runner<small>Une mine, des pépites, des robots</small>';
+  if(retro()&&G&&!ed){$('lvl').innerHTML=(cur.custom?'MON NIVEAU':'NIVEAU '+String(cur.index+1).padStart(3,'0'))+'<small>'+esc(cur.level.name)+'</small>';}else $('lvl').innerHTML=ed?'Atelier de niveaux<small>Clic pour poser, clic droit pour effacer</small>':cur?esc(levelLabel())+'<small>'+(testing?'Mode test':'Runner')+'</small>':'Runner<small>Une mine, un coureur, des robots</small>';
   $('stats').style.visibility=G&&!ed?'visible':'hidden';
   if(G){$('sGold').textContent=(G.totalGold-G.goldLeft)+'/'+G.totalGold;$('sScore').textContent=G.score.toLocaleString('fr-CA');$('sLives').textContent='♥'.repeat(Math.max(0,lives));}
   $('bSound').textContent=settings.mute?'✕':'♪';$('bPause').style.visibility=G&&!ed?'visible':'hidden';
