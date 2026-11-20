@@ -10,6 +10,7 @@
 <link rel="apple-touch-icon" href="icons/icon-180.png?v=4">
 <link rel="manifest" href="manifest.json?v=6">
 <title>Runner</title>
+<meta name="app-version" content="/*VERSION*/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
@@ -108,28 +109,30 @@ body.retro #toast{border-radius:0;font:10px "Press Start 2P",monospace}
 body.touch{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 body.touch #help{display:none!important}
 body.touch #app{padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));gap:8px;min-height:100dvh}
-body.touch #arena{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"stage stage" "l r";gap:10px 16px;width:var(--w);max-width:100%;align-items:center}
+body.touch #arena{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr;grid-template-areas:"stage stage" "l r";gap:18px 16px;width:var(--w);max-width:100%;align-items:end;flex:1 1 auto;padding-bottom:12px}
 body.touch #stage{grid-area:stage}
-body.touch .pad{display:flex;align-items:center;touch-action:none}
+body.touch .pad{display:flex;align-items:flex-end;touch-action:none}
 body.touch #padL{grid-area:l;justify-content:flex-start}
-body.touch #padR{grid-area:r;justify-content:flex-end;gap:12px}
-#dpad{position:relative;width:var(--pad,150px);height:var(--pad,150px);border-radius:50%;background:radial-gradient(circle,#1d2347 0 30%,#141836 31%);border:3px solid var(--line);touch-action:none}
+body.touch #padR{grid-area:r;justify-content:flex-end;gap:var(--gap,12px)}
+#dpad{position:relative;width:var(--pad,150px);height:var(--pad,150px);border-radius:50%;background:radial-gradient(circle,#1d2347 0 30%,#141836 31%);border:3px solid var(--line);touch-action:none;flex:none}
 #dpad span{position:absolute;color:var(--muted);font-size:20px;line-height:1;pointer-events:none}
 #dpad .u{top:10%;left:50%;transform:translateX(-50%)}#dpad .d{bottom:10%;left:50%;transform:translateX(-50%)}
 #dpad .l{left:10%;top:50%;transform:translateY(-50%)}#dpad .r{right:10%;top:50%;transform:translateY(-50%)}
 #dpad span.on{color:var(--gold)}
 #dpad i{position:absolute;width:34%;height:34%;left:33%;top:33%;border-radius:50%;background:var(--case2);border:2px solid var(--line);pointer-events:none;transition:transform .05s}
-.dig{width:calc(var(--pad,150px)*.56);height:calc(var(--pad,150px)*.56);border-radius:50%;border:3px solid var(--gold);background:var(--case2);color:var(--ink);font:800 12px Nunito,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;touch-action:none}
+.dig{width:var(--dig,76px);height:var(--dig,76px);flex:none;border-radius:50%;border:3px solid var(--gold);background:var(--case2);color:var(--ink);font:800 12px Nunito,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;touch-action:none}
 .dig b{font-size:24px;color:var(--gold);line-height:1}
 .dig.on{background:var(--gold);color:#000}.dig.on b{color:#000}
-#digL{margin-top:calc(var(--pad,150px)*.3)}
+/* le bouton de droite un peu plus haut : les pouces tombent naturellement dessus */
+#digR{margin-bottom:calc(var(--dig,76px)*.45)}
 @media (orientation:landscape){
- body.touch #arena{grid-template-columns:auto auto auto;grid-template-areas:"l stage r";gap:14px;width:auto;justify-content:center}
+ body.touch #app{gap:6px}
+ body.touch #arena{flex:0 0 auto;grid-template-rows:auto;padding-bottom:0}
+ body.touch #arena{grid-template-columns:var(--side) var(--w) var(--side);grid-template-areas:"l stage r";gap:0 var(--gap,16px);width:auto;justify-content:center;align-items:end}
  body.touch #stage{width:var(--w)}
- body.touch #padR{flex-direction:column;gap:14px}
- body.touch #digL{margin-top:0;margin-right:calc(var(--pad,150px)*.3)}
+ body.touch #padL{justify-content:center;padding-bottom:4px}
+ body.touch #padR{justify-content:center;padding-bottom:4px}
  body.touch #tip{display:none}
- body.touch #hud{width:100%}
 }
 body.retro #dpad{border-radius:0;background:#000;border:4px solid #f2f2f2}
 body.retro #dpad i{border-radius:0;background:#000;border-color:#f2f2f2}

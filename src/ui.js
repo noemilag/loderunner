@@ -158,7 +158,7 @@ function startLevel(c,fresh){
   cur=c;if(fresh){lives=5;score=0;}
   game=createGame(c.level.rows,hooks);game.G.score=score;game.G.spd=settings.speed;
   started=false;winT=-1;parts=[];mode='play';closeOv();
-  $('tip').textContent=c.level.tip||'';updHud(true);ac();
+  $('tip').textContent=(c.level.tip||'').replace('avec Z ou X',isTouch?'avec les boutons Creuser':'avec Z ou X');updHud(true);ac();
 }
 function restartSame(){startLevel(cur,false);}
 function playBuiltin(i,fresh){startLevel({index:i,level:LEVELS[i],custom:false},fresh);}
@@ -198,7 +198,7 @@ function showMenu(){
   <div class="col"><button class="btn pri" data-a="play">▶ Jouer · niveau ${n}</button>
   <button class="btn" data-a="select">Choisir un niveau</button>
   <button class="btn" data-a="editor">Atelier de niveaux</button>
-  <button class="btn" data-a="help">Comment jouer</button></div>${speedSeg()}<br>${themeSeg()}</div>`);
+  <button class="btn" data-a="help">Comment jouer</button>${newVersion?'<button class="btn pri" data-a="update">★ Nouvelle version · Mettre à jour</button>':'<button class="btn" data-a="update">Mettre à jour le jeu</button>'}</div>${speedSeg()}<br>${themeSeg()}${VERSION&&!VERSION.startsWith('/*')?`<p style="margin:12px 0 0;font-size:11px;opacity:.6">Version ${esc(VERSION)}</p>`:''}</div>`);
 }
 function showSelect(){
   mode='menu';
@@ -253,6 +253,7 @@ function act(a,v){
   else if(a==='retry0'){startLevel(cur,false);}
   else if(a==='next')playBuiltin(cur.index+1,false);
   else if(a==='again'){lives=5;startLevel(cur,false);}
+  else if(a==='update')doUpdate();
   else if(a==='theme'){settings.theme=v;store.set('pp_settings',settings);applyTheme();preview=null;showMenu();}
   else if(a==='speed'){settings.speed=+v;store.set('pp_settings',settings);if(game)game.G.spd=settings.speed;ov.querySelectorAll('.seg button[data-a=speed]').forEach(b=>b.classList.toggle('on',b.dataset.v==v));}
   else if(a==='edLoad'){const l=custom[+v];ED.grid=l.rows.map(r=>r.split(''));$('edName').value=l.name;closeOv();mode='editor';}
@@ -454,14 +455,42 @@ digBtn('digL',-1);digBtn('digR',1);
 $('bFull').onclick=()=>{const d=document;try{(d.fullscreenElement?d.exitFullscreen():d.documentElement.requestFullscreen({navigationUI:'hide'})).then(()=>setTimeout(fit,200)).catch(()=>toast('Plein écran non disponible ici'));}catch(_){toast('Plein écran non disponible ici');}};
 document.addEventListener('dblclick',e=>{if(isTouch)e.preventDefault();},{passive:false});
 
+
+// ================= mise à jour =================
+const VERSION=(document.querySelector('meta[name=app-version]')||{}).content||'';
+let newVersion=null;
+function checkUpdate(){
+  if(!VERSION||VERSION.startsWith('/*')||location.protocol==='file:')return Promise.resolve(null);
+  return fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{
+    newVersion=j&&j.version&&j.version!==VERSION?j.version:null;return newVersion;}).catch(()=>null);
+}
+function doUpdate(){toast('Mise à jour…');
+  const go=()=>location.replace(location.pathname+'?v='+Date.now()+location.hash);
+  try{if(window.caches)caches.keys().then(k=>Promise.all(k.map(n=>caches.delete(n)))).finally(go);else go();}catch(e){go();}}
+checkUpdate().then(v=>{if(v&&mode==='menu')showMenu();});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate().then(v=>{if(v&&mode==='menu')showMenu();else if(v)toast('Nouvelle version : va au menu pour mettre à jour');});});
+
 // ================= layout =================
-function fit(){const ed=$('editbar').style.display==='flex';
-  if(isTouch&&!ed){const land=innerWidth>innerHeight;
-    const pad=Math.round(Math.max(110,Math.min(170,(land?innerHeight*0.42:innerWidth*0.38))));document.documentElement.style.setProperty('--pad',pad+'px');
-    const w=land?Math.min(innerWidth-2*pad-60,(innerHeight-70)*W/H+16):Math.min(innerWidth-16,(innerHeight-pad-150)*W/H+16);
-    document.documentElement.style.setProperty('--w',Math.max(240,Math.min(w,1180))+'px');return;}
+function fit(){const ed=$('editbar').style.display==='flex';const root=document.documentElement.style;
+  if(isTouch&&!ed){
+    const app=$('app'),cs=getComputedStyle(app);
+    const aw=app.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+    const ah=innerHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-$('hud').offsetHeight-8;
+    const land=innerWidth>innerHeight;let pad,dig,w,side,gap;
+    if(land){
+      pad=Math.round(Math.max(104,Math.min(160,ah*0.5)));dig=Math.round(pad*0.52);gap=Math.max(14,Math.round(aw*0.02));
+      side=Math.max(pad,dig*2+12);
+      w=Math.min(aw-2*side-2*gap-24,(ah-24)*W/H+16);
+    } else {
+      pad=Math.round(Math.max(120,Math.min(180,aw*0.42)));dig=Math.round(pad*0.5);gap=12;side=0;
+      w=Math.min(aw,(ah-pad-40)*W/H+16);
+    }
+    root.setProperty('--pad',pad+'px');root.setProperty('--dig',dig+'px');root.setProperty('--gap',gap+'px');root.setProperty('--side',side+'px');
+    root.setProperty('--w',Math.max(240,Math.min(w,1180))+'px');return;}
   const reserve=ed?250:130;
-  const w=Math.max(280,Math.min(innerWidth-24,(innerHeight-reserve)*W/H+20,1180));document.documentElement.style.setProperty('--w',w+'px');}
+  const w=Math.max(280,Math.min(innerWidth-24,(innerHeight-reserve)*W/H+20,1180));root.setProperty('--w',w+'px');}
+addEventListener('orientationchange',()=>setTimeout(fit,250));
+if(window.visualViewport)visualViewport.addEventListener('resize',fit);
 addEventListener('resize',fit);fit();
 applyTheme();
 showMenu();

@@ -22,6 +22,8 @@ Ouvre `index.html` dans un navigateur. Tout est dans ce seul fichier, sans insta
 
 Sur téléphone ou tablette, une croix directionnelle et deux boutons « Creuser » apparaissent à l'écran (jamais sur ordinateur). À l'horizontale, l'écran de jeu est plus grand.
 
+Le menu a un bouton « Mettre à jour le jeu ». Quand une nouvelle version est publiée, il devient jaune : pas besoin de retirer le raccourci de l'écran d'accueil.
+
 La progression et les niveaux maison sont gardés dans le navigateur (localStorage).
 
 ## Code
@@ -30,7 +32,8 @@ La progression et les niveaux maison sont gardés dans le navigateur (localStora
 index.html          le jeu assemblé (c'est lui qu'on publie)
 manifest.json       nom (« Runner ») et icône pour l'écran d'accueil du téléphone
 icons/              icône du jeu (32 à 512 px) et make_icon.py qui la dessine
-build.py            reconstruit index.html à partir de src/
+build.py            reconstruit index.html à partir de src/ et écrit version.json
+version.json        numéro de la dernière version (sert au bouton « Mettre à jour »)
 src/engine.js       règles du jeu : déplacements, trous, gardiens, chemin le plus court
 src/ui.js           affichage, sons, menus, atelier
 src/template.html   la page et ses styles
