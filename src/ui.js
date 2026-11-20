@@ -337,10 +337,10 @@ function drawParts(dt){
   ctx.globalAlpha=1;
 }
 function banner(txt,sub,a){
-  ctx.globalAlpha=a;ctx.fillStyle=retro()?'#000':'rgba(9,11,28,.8)';const w=Math.max(420,txt.length*(retro()?21:17)+60);ctx.fillRect(448-w/2,206,w,sub?100:70);
+  ctx.globalAlpha=a;ctx.fillStyle=retro()?'#000':'rgba(9,11,28,.8)';const w=Math.min(880,Math.max(isTouch?640:420,txt.length*(retro()?(isTouch?27:21):17)+60));ctx.fillRect(448-w/2,206,w,sub?100:70);
   ctx.strokeStyle=retro()?'#fff':'#fbbf24';ctx.lineWidth=retro()?4:3;ctx.strokeRect(448-w/2+1.5,207.5,w-3,(sub?100:70)-3);
-  ctx.fillStyle=retro()?'#ffd23f':'#fbbf24';ctx.font=retro()?'20px "Press Start 2P",monospace':'30px "Lilita One",system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,448,sub?240:241);
-  if(sub){ctx.fillStyle='#f6f0dc';ctx.font=retro()?'11px "Press Start 2P",monospace':'800 16px Nunito,system-ui';ctx.fillText(sub,448,276);}
+  ctx.fillStyle=retro()?'#ffd23f':'#fbbf24';ctx.font=retro()?(isTouch?'26px':'20px')+' "Press Start 2P",monospace':(isTouch?'38px':'30px')+' "Lilita One",system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,448,sub?240:241);
+  if(sub){ctx.fillStyle='#f6f0dc';ctx.font=retro()?(isTouch?'16px':'11px')+' "Press Start 2P",monospace':(isTouch?'800 22px':'800 16px')+' Nunito,system-ui';ctx.fillText(sub,448,276);}
   ctx.globalAlpha=1;
 }
 let last=performance.now();
