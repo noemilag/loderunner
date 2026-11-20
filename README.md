@@ -28,7 +28,7 @@ La progression et les niveaux maison sont gardés dans le navigateur (localStora
 
 ```
 index.html          le jeu assemblé (c'est lui qu'on publie)
-manifest.json       nom et icône pour l'écran d'accueil du téléphone
+manifest.json       nom (« Runner ») et icône pour l'écran d'accueil du téléphone
 icons/              icône du jeu (32 à 512 px) et make_icon.py qui la dessine
 build.py            reconstruit index.html à partir de src/
 src/engine.js       règles du jeu : déplacements, trous, gardiens, chemin le plus court
