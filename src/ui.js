@@ -193,7 +193,7 @@ function speedSeg(){return `<div class="seg">${[[.75,'Tortue'],[1,'Normale'],[1.
 function showMenu(){
   mode='menu';testing=false;game=null;cur=null;$('tip').textContent='';showEditBar(false);updHud(true);
   const n=Math.min(progress.unlocked,LEVELS.length);
-  openOv(`<div class="panel"><h1 class="logo">Pioche <span>et</span> Pépites</h1>
+  openOv(`<div class="panel"><h1 class="logo">Runner</h1>
   <p>Ramasse toutes les pépites, creuse des trous pour piéger les robots gardiens, puis grimpe tout en haut par l'échelle de sortie.</p>
   <div class="col"><button class="btn pri" data-a="play">▶ Jouer · niveau ${n}</button>
   <button class="btn" data-a="select">Choisir un niveau</button>
@@ -272,7 +272,7 @@ function updHud(force){
   const k=mode+'|'+(G?G.goldLeft+'|'+G.score:'')+'|'+lives+'|'+settings.mute+'|'+(cur?levelLabel():'');
   if(k===hudKey&&!force)return;hudKey=k;
   const ed=mode==='editor';
-  if(retro()&&G&&!ed){$('lvl').innerHTML=(cur.custom?'MON NIVEAU':'NIVEAU '+String(cur.index+1).padStart(3,'0'))+'<small>'+esc(cur.level.name)+'</small>';}else $('lvl').innerHTML=ed?'Atelier de niveaux<small>Clic pour poser, clic droit pour effacer</small>':cur?esc(levelLabel())+'<small>'+(testing?'Mode test':'Pioche et Pépites')+'</small>':'Pioche et Pépites<small>Une mine, des pépites, des robots</small>';
+  if(retro()&&G&&!ed){$('lvl').innerHTML=(cur.custom?'MON NIVEAU':'NIVEAU '+String(cur.index+1).padStart(3,'0'))+'<small>'+esc(cur.level.name)+'</small>';}else $('lvl').innerHTML=ed?'Atelier de niveaux<small>Clic pour poser, clic droit pour effacer</small>':cur?esc(levelLabel())+'<small>'+(testing?'Mode test':'Runner')+'</small>':'Runner<small>Une mine, des pépites, des robots</small>';
   $('stats').style.visibility=G&&!ed?'visible':'hidden';
   if(G){$('sGold').textContent=(G.totalGold-G.goldLeft)+'/'+G.totalGold;$('sScore').textContent=G.score.toLocaleString('fr-CA');$('sLives').textContent='♥'.repeat(Math.max(0,lives));}
   $('bSound').textContent=settings.mute?'✕':'♪';$('bPause').style.visibility=G&&!ed?'visible':'hidden';

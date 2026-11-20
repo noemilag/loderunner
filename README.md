@@ -1,4 +1,4 @@
-# Pioche et Pépites
+# Runner
 
 Un petit jeu de plateforme à jouer à deux, papa et fiston. Ramasse toutes les pépites, creuse des trous pour piéger les robots gardiens, puis grimpe tout en haut par l'échelle de sortie.
 
