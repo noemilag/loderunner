@@ -359,7 +359,7 @@ function frame(now){
       updHud();
     }
     drawMap(game,t);drawEntities(game,t);drawParts(mode==='pause'?0:dt);
-    if(mode==='play'&&!started)banner(levelLabel(),'Appuie sur une flèche pour commencer',1);
+    if(mode==='play'&&!started)banner(levelLabel(),isTouch?'Touche la croix pour commencer':'Appuie sur une flèche pour commencer',1);
     else if(mode==='play'&&G.revealed&&G.t-G.revealT<2.4&&G.revealT>0)banner('La sortie est ouverte !','Grimpe tout en haut par l\'échelle turquoise',Math.min(1,(2.4-(G.t-G.revealT))*2));
   } else {
     if(!preview)preview=createGame(LEVELS[0].rows,{});drawMap(preview,t);drawEntities(preview,t);
@@ -426,8 +426,41 @@ $('eShare').onclick=()=>{mode='edmodal';openOv(`<div class="panel"><h2>Partager<
   <p>Ou colle le code d'un niveau ici pour l'ouvrir :</p><textarea id="imp" placeholder="PP1.…"></textarea>
   <div class="row" style="margin-top:10px"><button class="btn" data-a="import">Importer</button><button class="btn pri" data-a="edClose">Fermer</button></div></div>`);};
 
+
+// ================= tactile =================
+let isTouch=false;
+function enableTouch(){if(isTouch)return;isTouch=true;document.body.classList.add('touch');
+  if(document.documentElement.requestFullscreen)$('bFull').classList.add('ok');fit();}
+// Seulement sur téléphone/tablette (pas de souris, pas de survol) : jamais sur un ordinateur
+if(matchMedia('(hover:none) and (pointer:coarse)').matches)enableTouch();
+const dpad=$('dpad'),knob=dpad.querySelector('i');let padId=null;
+function setDir(d){for(const k of ['left','right','up','down']){const on=k===d;
+    if(on&&!held[k]){held[k]=true;order=[k,...order.filter(o=>o!==k)];}
+    if(!on&&held[k]&&padId!==null){held[k]=false;order=order.filter(o=>o!==k);}}
+  dpad.querySelectorAll('span').forEach(s=>s.classList.toggle('on',d&&s.className.startsWith({left:'l',right:'r',up:'u',down:'d'}[d])));}
+function padMove(e){const r=dpad.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),dist=Math.hypot(dx,dy),R=r.width/2;
+  const k=Math.min(1,dist/R)*R*.33;knob.style.transform=`translate(${dist?dx/dist*k:0}px,${dist?dy/dist*k:0}px)`;
+  setDir(dist<R*.18?null:Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'up':'down'));}
+dpad.addEventListener('pointerdown',e=>{e.preventDefault();padId=e.pointerId;dpad.setPointerCapture(e.pointerId);ac();padMove(e);});
+dpad.addEventListener('pointermove',e=>{if(e.pointerId===padId)padMove(e);});
+function padEnd(e){if(e.pointerId!==padId)return;setDir(null);padId=null;knob.style.transform='';}
+dpad.addEventListener('pointerup',padEnd);dpad.addEventListener('pointercancel',padEnd);
+function digBtn(id,side){const b=$(id);
+  b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);b.classList.add('on');ac();
+    if(side<0){digLH=true;digL=performance.now();}else{digRH=true;digR=performance.now();}try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}});
+  const up=()=>{b.classList.remove('on');if(side<0)digLH=false;else digRH=false;};
+  b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);b.addEventListener('contextmenu',e=>e.preventDefault());}
+digBtn('digL',-1);digBtn('digR',1);
+$('bFull').onclick=()=>{const d=document;try{(d.fullscreenElement?d.exitFullscreen():d.documentElement.requestFullscreen({navigationUI:'hide'})).then(()=>setTimeout(fit,200)).catch(()=>toast('Plein écran non disponible ici'));}catch(_){toast('Plein écran non disponible ici');}};
+document.addEventListener('dblclick',e=>{if(isTouch)e.preventDefault();},{passive:false});
+
 // ================= layout =================
-function fit(){const ed=$('editbar').style.display==='flex';const reserve=ed?250:130;
+function fit(){const ed=$('editbar').style.display==='flex';
+  if(isTouch&&!ed){const land=innerWidth>innerHeight;
+    const pad=Math.round(Math.max(110,Math.min(170,(land?innerHeight*0.42:innerWidth*0.38))));document.documentElement.style.setProperty('--pad',pad+'px');
+    const w=land?Math.min(innerWidth-2*pad-60,(innerHeight-70)*W/H+16):Math.min(innerWidth-16,(innerHeight-pad-150)*W/H+16);
+    document.documentElement.style.setProperty('--w',Math.max(240,Math.min(w,1180))+'px');return;}
+  const reserve=ed?250:130;
   const w=Math.max(280,Math.min(innerWidth-24,(innerHeight-reserve)*W/H+20,1180));document.documentElement.style.setProperty('--w',w+'px');}
 addEventListener('resize',fit);fit();
 applyTheme();

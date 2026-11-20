@@ -20,6 +20,8 @@ Ouvre `index.html` dans un navigateur. Tout est dans ce seul fichier, sans insta
 - Look 1985 (par défaut) ou moderne, vitesse Tortue / Normale / Lièvre
 - Atelier pour dessiner, tester, enregistrer et partager ses propres niveaux (par code)
 
+Sur téléphone ou tablette, une croix directionnelle et deux boutons « Creuser » apparaissent à l'écran (jamais sur ordinateur). À l'horizontale, l'écran de jeu est plus grand.
+
 La progression et les niveaux maison sont gardés dans le navigateur (localStorage).
 
 ## Code
@@ -39,4 +41,4 @@ Après une modification : `python3 src/levels.py` (si les niveaux changent), pui
 
 ## À venir
 
-- Contrôles tactiles et affichage pour mobile
+- Peaufiner la version mobile après les premiers essais

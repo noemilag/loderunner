@@ -2,7 +2,9 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#000000">
 <title>Pioche et Pépites</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800&family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -94,6 +96,41 @@ body.retro kbd{border-radius:0;font:10px "Press Start 2P",monospace;padding:4px 
 body.retro #help,body.retro #tip,body.retro p,body.retro .keys,body.retro .legend{font-size:10px;line-height:1.9}
 body.retro #tip{color:#ffd23f}
 body.retro #toast{border-radius:0;font:10px "Press Start 2P",monospace}
+
+/* ---- contrôles tactiles ---- */
+#arena{display:contents}
+.pad{display:none}
+body.touch{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+body.touch #help{display:none!important}
+body.touch #app{padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));gap:8px;min-height:100dvh}
+body.touch #arena{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"stage stage" "l r";gap:10px 16px;width:var(--w);max-width:100%;align-items:center}
+body.touch #stage{grid-area:stage}
+body.touch .pad{display:flex;align-items:center;touch-action:none}
+body.touch #padL{grid-area:l;justify-content:flex-start}
+body.touch #padR{grid-area:r;justify-content:flex-end;gap:12px}
+#dpad{position:relative;width:var(--pad,150px);height:var(--pad,150px);border-radius:50%;background:radial-gradient(circle,#1d2347 0 30%,#141836 31%);border:3px solid var(--line);touch-action:none}
+#dpad span{position:absolute;color:var(--muted);font-size:20px;line-height:1;pointer-events:none}
+#dpad .u{top:10%;left:50%;transform:translateX(-50%)}#dpad .d{bottom:10%;left:50%;transform:translateX(-50%)}
+#dpad .l{left:10%;top:50%;transform:translateY(-50%)}#dpad .r{right:10%;top:50%;transform:translateY(-50%)}
+#dpad span.on{color:var(--gold)}
+#dpad i{position:absolute;width:34%;height:34%;left:33%;top:33%;border-radius:50%;background:var(--case2);border:2px solid var(--line);pointer-events:none;transition:transform .05s}
+.dig{width:calc(var(--pad,150px)*.56);height:calc(var(--pad,150px)*.56);border-radius:50%;border:3px solid var(--gold);background:var(--case2);color:var(--ink);font:800 12px Nunito,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;touch-action:none}
+.dig b{font-size:24px;color:var(--gold);line-height:1}
+.dig.on{background:var(--gold);color:#000}.dig.on b{color:#000}
+#digL{margin-top:calc(var(--pad,150px)*.3)}
+@media (orientation:landscape){
+ body.touch #arena{grid-template-columns:auto auto auto;grid-template-areas:"l stage r";gap:14px;width:auto;justify-content:center}
+ body.touch #stage{width:var(--w)}
+ body.touch #padR{flex-direction:column;gap:14px}
+ body.touch #digL{margin-top:0;margin-right:calc(var(--pad,150px)*.3)}
+ body.touch #tip{display:none}
+ body.touch #hud{width:100%}
+}
+body.retro #dpad{border-radius:0;background:#000;border:4px solid #f2f2f2}
+body.retro #dpad i{border-radius:0;background:#000;border-color:#f2f2f2}
+body.retro .dig{border-radius:0;background:#000;font:9px "Press Start 2P",monospace}
+body.retro .dig.on{background:#ffd23f}
+#bFull{display:none}body.touch #bFull.ok{display:grid}
 @media(prefers-reduced-motion:reduce){#toast{transition:none}}
 @media(max-width:600px){.stats{gap:10px}.lvl{font-size:17px}}
 </style>
@@ -108,14 +145,19 @@ body.retro #toast{border-radius:0;font:10px "Press Start 2P",monospace}
       <div class="stat" title="Points"><span id="sScore">0</span></div>
     </div>
     <div class="tools">
+      <button class="ib" id="bFull" title="Plein écran" aria-label="Plein écran">⛶</button>
       <button class="ib" id="bPause" title="Pause (Échap)" aria-label="Pause">❚❚</button>
       <button class="ib" id="bSound" title="Son" aria-label="Son">♪</button>
       <button class="ib" id="bMenu" title="Menu" aria-label="Menu">≡</button>
     </div>
   </div>
+  <div id="arena">
+  <div class="pad" id="padL"><div id="dpad" aria-label="Croix directionnelle"><span class="u">▲</span><span class="l">◀</span><span class="r">▶</span><span class="d">▼</span><i></i></div></div>
   <div id="stage" class="wrap">
     <canvas id="cv" width="896" height="512"></canvas>
     <div class="ov" id="ov"></div>
+  </div>
+  <div class="pad" id="padR"><button class="dig" id="digL" aria-label="Creuser à gauche"><b>◣</b>Creuser</button><button class="dig" id="digR" aria-label="Creuser à droite"><b>◢</b>Creuser</button></div>
   </div>
   <div id="tip" class="wrap"></div>
   <div id="editbar" class="wrap">
