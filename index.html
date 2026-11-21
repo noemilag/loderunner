@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icons/icon-180.png?v=4">
 <link rel="manifest" href="manifest.json?v=6">
 <title>Runner</title>
-<meta name="app-version" content="2026.11.20-1948">
+<meta name="app-version" content="2026.11.20-1950">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
@@ -626,6 +626,8 @@ function openOv(html){ov.innerHTML=html;ov.classList.add('on');const b=ov.queryS
 function closeOv(){ov.classList.remove('on');ov.innerHTML='';}
 ov.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b||b.disabled)return;SFX.click();act(b.dataset.a,b.dataset.v);});
 function themeSeg(){return `<div class="seg">${[['retro','Look 1985'],['moderne','Look moderne']].map(([v,l])=>`<button data-a="theme" data-v="${v}" class="${settings.theme===v?'on':''}">${l}</button>`).join('')}</div>`;}
+function updBtn(){return newVersion?'<button class="btn pri" data-a="update">★ Nouvelle version · Mettre à jour</button>':'<button class="btn" data-a="update">Mettre à jour le jeu</button>';}
+function verLine(){return VERSION&&!VERSION.startsWith('/*')?`<p style="margin:12px 0 0;font-size:11px;opacity:.6">Version ${esc(VERSION)}</p>`:'';}
 function speedSeg(){return `<div class="seg">${[[.75,'Tortue'],[1,'Normale'],[1.2,'Lièvre']].map(([v,l])=>`<button data-a="speed" data-v="${v}" class="${settings.speed==v?'on':''}">${l}</button>`).join('')}</div>`;}
 function showMenu(){
   mode='menu';testing=false;game=null;cur=null;$('tip').textContent='';showEditBar(false);updHud(true);
@@ -635,7 +637,7 @@ function showMenu(){
   <div class="col"><button class="btn pri" data-a="play">▶ Jouer · niveau ${n}</button>
   <button class="btn" data-a="select">Choisir un niveau</button>
   <button class="btn" data-a="editor">Atelier de niveaux</button>
-  <button class="btn" data-a="help">Comment jouer</button>${newVersion?'<button class="btn pri" data-a="update">★ Nouvelle version · Mettre à jour</button>':'<button class="btn" data-a="update">Mettre à jour le jeu</button>'}</div>${speedSeg()}<br>${themeSeg()}${VERSION&&!VERSION.startsWith('/*')?`<p style="margin:12px 0 0;font-size:11px;opacity:.6">Version ${esc(VERSION)}</p>`:''}</div>`);
+  <button class="btn" data-a="help">Comment jouer</button>${updBtn()}</div>${speedSeg()}<br>${themeSeg()}${verLine()}</div>`);
 }
 function showSelect(){
   mode='menu';
@@ -656,9 +658,10 @@ function showHelp(){
   <p>Un robot qui tombe dans ton trou reste coincé un moment : tu peux marcher sur sa tête. Si le trou se referme sur lui, il réapparaît en haut. Attention, le trou se referme aussi sur toi !</p>
   <div class="row"><button class="btn pri" data-a="menu">Compris !</button></div></div>`);
 }
+function pause2(){mode='play';pause();}
 function pause(){if(mode!=='play')return;mode='pause';
   openOv(`<div class="panel"><h2>Pause</h2><p>${esc(levelLabel())}</p><div class="col"><button class="btn pri" data-a="resume">Continuer</button>
-  <button class="btn" data-a="retry">Recommencer (−1 vie)</button>${testing?'<button class="btn" data-a="editor">Retour à l\'Atelier</button>':''}<button class="btn" data-a="menu">Menu principal</button></div>${speedSeg()}</div>`);}
+  <button class="btn" data-a="retry">Recommencer (−1 vie)</button>${testing?'<button class="btn" data-a="editor">Retour à l\'Atelier</button>':''}<button class="btn" data-a="menu">Menu principal</button>${updBtn()}</div>${speedSeg()}${verLine()}</div>`);}
 function resume(){mode='play';closeOv();}
 function showWin(){
   mode='won';score=game.G.score;
@@ -904,7 +907,7 @@ function checkUpdate(){
 function doUpdate(){toast('Mise à jour…');
   const go=()=>location.replace(location.pathname+'?v='+Date.now()+location.hash);
   try{if(window.caches)caches.keys().then(k=>Promise.all(k.map(n=>caches.delete(n)))).finally(go);else go();}catch(e){go();}}
-checkUpdate().then(v=>{if(v&&mode==='menu')showMenu();});
+checkUpdate().then(v=>{if(v&&mode==='menu')showMenu();else if(v&&mode==='pause')pause2();});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate().then(v=>{if(v&&mode==='menu')showMenu();else if(v)toast('Nouvelle version : va au menu pour mettre à jour');});});
 
 // ================= layout =================
