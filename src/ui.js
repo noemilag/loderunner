@@ -483,7 +483,7 @@ function fit(){const ed=$('editbar').style.display==='flex';const root=document.
     if(land){
       // le jeu d'abord : commandes à taille confortable mais minimale
       pad=Math.round(Math.max(100,Math.min(132,ah*0.34)));dig=Math.round(Math.max(54,Math.min(70,ah*0.18)));gap=16;
-      const lw=pad,rw=Math.round(dig*1.55);side=0;
+      const lw=pad,rw=dig+6;side=0;
       w=Math.min(aw-lw-rw-2*gap,(ah-30)*W/H+16);
       root.setProperty('--lw',lw+'px');root.setProperty('--rw',rw+'px');
     } else {

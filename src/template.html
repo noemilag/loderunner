@@ -131,15 +131,14 @@ body.touch #padR{grid-area:r;justify-content:flex-end;gap:var(--gap,12px)}
  body.touch #arena{flex:0 0 auto;grid-template-rows:auto;padding-bottom:0;grid-template-columns:var(--lw) var(--w) var(--rw);grid-template-areas:"l stage r";gap:0 var(--gap,16px);width:auto;justify-content:center;align-items:end}
  body.touch #stage{width:var(--w)}
  body.touch #padL{justify-content:flex-start}
- /* boutons Creuser en escalier : gauche en bas à gauche, droite en haut à droite */
- body.touch #padR{flex-direction:column-reverse;align-items:stretch;gap:0;width:var(--rw)}
- body.touch #digL{align-self:flex-start;margin:0}
- body.touch #digR{align-self:flex-end;margin:0 0 calc(var(--dig,64px)*-.12)}
+ /* boutons Creuser l'un au-dessus de l'autre : droite en haut, gauche en bas */
+ body.touch #padR{flex-direction:column-reverse;align-items:center;gap:12px;width:var(--rw)}
+ body.touch #digL,body.touch #digR{margin:0}
  body.touch #tip{display:none}
 }
 body.retro #dpad{border-radius:0;background:#000;border:4px solid #f2f2f2}
 body.retro #dpad i{border-radius:0;background:#000;border-color:#f2f2f2}
-body.retro .dig{border-radius:0;background:#000;font:9px "Press Start 2P",monospace}
+body.retro .dig{border-radius:0;background:#000;font:8px "Press Start 2P",monospace;letter-spacing:-.5px}
 body.retro .dig.on{background:#ffd23f}
 body.touch .ov{position:fixed;inset:0;border-radius:0;z-index:20;padding:max(16px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));background:rgba(0,0,0,.92)}
 body.touch .panel{padding:20px 16px}
@@ -177,7 +176,7 @@ body.touch .stats{gap:8px;font-size:13px}
     <canvas id="cv" width="896" height="512"></canvas>
     <div class="ov" id="ov"></div>
   </div>
-  <div class="pad" id="padR"><button class="dig" id="digL" aria-label="Creuser à gauche"><b>◣</b>Creuser</button><button class="dig" id="digR" aria-label="Creuser à droite"><b>◢</b>Creuser</button></div>
+  <div class="pad" id="padR"><button class="dig" id="digL" aria-label="Creuser à gauche"><b>◣</b>Gauche</button><button class="dig" id="digR" aria-label="Creuser à droite"><b>◢</b>Droite</button></div>
   </div>
   <div id="tip" class="wrap"></div>
   <div id="editbar" class="wrap">
