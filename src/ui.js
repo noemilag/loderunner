@@ -475,14 +475,16 @@ function fit(){const ed=$('editbar').style.display==='flex';const root=document.
   if(isTouch&&!ed){
     const app=$('app'),cs=getComputedStyle(app);
     const aw=app.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
-    const ah=innerHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-$('hud').offsetHeight-8;
+    const ah=innerHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-$('hud').offsetHeight-parseFloat(cs.rowGap||0)-14;
     const land=innerWidth>innerHeight;let pad,dig,w,side,gap;
     if(land){
-      pad=Math.round(Math.max(104,Math.min(160,ah*0.5)));dig=Math.round(pad*0.52);gap=Math.max(14,Math.round(aw*0.02));
-      side=Math.max(pad,dig*2+12);
-      w=Math.min(aw-2*side-2*gap-24,(ah-24)*W/H+16);
+      // le jeu d'abord : commandes à taille confortable mais minimale
+      pad=Math.round(Math.max(100,Math.min(132,ah*0.34)));dig=Math.round(Math.max(54,Math.min(70,ah*0.18)));gap=16;
+      const lw=pad,rw=Math.round(dig*1.55);side=0;
+      w=Math.min(aw-lw-rw-2*gap,(ah-30)*W/H+16);
+      root.setProperty('--lw',lw+'px');root.setProperty('--rw',rw+'px');
     } else {
-      pad=Math.round(Math.max(120,Math.min(180,aw*0.42)));dig=Math.round(pad*0.5);gap=12;side=0;
+      pad=Math.round(Math.max(120,Math.min(170,aw*0.4)));dig=Math.round(pad*0.5);gap=12;side=0;
       w=Math.min(aw,(ah-pad-40)*W/H+16);
     }
     root.setProperty('--pad',pad+'px');root.setProperty('--dig',dig+'px');root.setProperty('--gap',gap+'px');root.setProperty('--side',side+'px');
